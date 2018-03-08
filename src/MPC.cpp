@@ -47,8 +47,8 @@ class FG_eval {
 		fg[0] = 0; // initialize to 0
 		// Cost based on reference trajectory and velocity
 		for (size_t i = 0; i < N; ++i) {
-			fg[0] += 50 * CppAD::pow(vars[cte_start + i], 2); // 50 *
-			fg[0] += 50 * CppAD::pow(vars[epsi_start + i], 2); // 50 *
+			fg[0] += 50 * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += 50 * CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - ref_v, 2);
 		}
 		// Cost based on magnitude of actuations, to avoid large values
@@ -58,8 +58,8 @@ class FG_eval {
 		}
 		// Minimize gap between actuations, for smoother motion during state transition
 		for (size_t i = 0; i < N - 2; ++i) {
-			fg[0] += 80000 * CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2); // 80000 *
-			fg[0] += CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2); // 100 *
+			fg[0] += 80000 * CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
+			fg[0] += CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
 		}
 		
 		// Setup contraints based on vehicle motion (kinematic) model
