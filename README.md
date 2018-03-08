@@ -9,7 +9,8 @@
 This project implements a Model Predictive Controller (MPC) using the kinematic model for the vehicle's motion. It works in conjunction with Udacity's SDC Simulator. The simulator feeds the model with the desired trajector. The controller program uses the kinematic equations to determine desired acuations (steering and throttle/brake) to keep the car on the desired tradjector. The actuation commands are sent back to the simulator, and the process repeats. The image below shows this in action. The yellow line is the reference tradjector (in the vehicle's coordinate system) and the green line is the path calculated by the model.
 
 ![simulation][image1]
-
+  
+  
 ## MPC Methodology
 
 The image below shows the implemented model composed of time discretization, kinematic equations including errors, and actuator constraints.
@@ -18,14 +19,27 @@ The image below shows the implemented model composed of time discretization, kin
 
 ### Vehicle State Representation
 
+The vehicle's state is modeled using 6 variables: x, y, psi, v, cte and epsi. The first four variables (x, y, psi, v) represent the vehicle's x-y cooridnates, its orientation, and its velocity respectively. The last two variables (cte, epsi) represent the cross track error and orientation error based on the reference tradjector recieved from the simulator. These state variables are updated using the kinematic equations in the image above. The constraints in the model above are actually actuation variables for steering (delta) and throttle/brake (a) that the MPC determines through cost optimization.
+
+### Model Cost
+
+Collectively the model equations and actuation bounds form the constraints through which the model's cost is optimized (minimized). This is done using the ipopt and CppAD libraries. The model's cost is defined around three main considerations: 
+* cte and epsi should be minimized to stay as close to the reference trajectory as possible.
+* Magnitude of actuator variables should be minimized to avoid erratic motion.
+* Rate of change between successive actuation should be minimize for smoother motion.
+
 ### Time Discretization
 
 ### Tradjector Preprocessing and Polynomial Fitting
 
 ### Actuator Latency
 
+  
+  
 ## Tuning
 
+  
+  
 ## Dependencies
 * cmake >= 3.5
  * All OSes: [click here for installation instructions](https://cmake.org/install/)
@@ -51,8 +65,8 @@ The image below shows the implemented model composed of time discretization, kin
 * [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page). This is already part of the repo so you shouldn't have to worry about it.
 * Simulator. You can download these from the [releases tab](https://github.com/udacity/self-driving-car-sim/releases).
 * Not a dependency but read the [DATA.md](./DATA.md) for a description of the data sent back from the simulator.
-
-
+  
+  
 ## Build Instructions
 
 1. Clone this repo.
