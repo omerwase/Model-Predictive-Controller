@@ -22,7 +22,7 @@ const size_t N = 10;
 const double dt = 0.05;
 
 // desired velocity for the cost optimization
-const double ref_v = 60; // 65
+const double ref_v = 60;
 
 // This value assumes the model presented in the classroom is used.
 //
