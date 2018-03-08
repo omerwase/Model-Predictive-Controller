@@ -103,66 +103,66 @@ int main() {
           double py = j[1]["y"];
           double psi = j[1]["psi"];
           double v0 = j[1]["speed"];
-					double delta0 = j[1]["steering_angle"];
-					double a0 = j[1]["throttle"];
-					// Latency
-					// The purpose is to mimic real driving conditions where
-					// the car does actuate the commands instantly.
-					const int delay_ms = 100;
-					const double delay_s = delay_ms / 1000.0;
-					// Number of reference points to consider for polyfit
-					size_t look_ahead_pts = ptsx_global.size();
+	  double delta0 = j[1]["steering_angle"];
+	  double a0 = j[1]["throttle"];
+	  // Latency
+	  // The purpose is to mimic real driving conditions where
+	  // the car does actuate the commands instantly.
+	  const int delay_ms = 100;
+	  const double delay_s = delay_ms / 1000.0;
+	  // Number of reference points to consider for polyfit
+	  size_t look_ahead_pts = ptsx_global.size();
 
-					// Transform reference trajector recieved from the simulator, from global
-					// to vehicle coordinate system (vehicle is at origin)
-					assert(ptsx_global.size() == ptsy_global.size());
-					Eigen::VectorXd ptsx_v(look_ahead_pts);
-					Eigen::VectorXd ptsy_v(look_ahead_pts);
-					vector<double> next_x_vals;
-					vector<double> next_y_vals;
-					for (size_t i = 0; i < look_ahead_pts; ++i) {
-						double dx = ptsx_global[i] - px;
-						double dy = ptsy_global[i] - py;
-						// ptsx_v and ptsy_v are Eigen vectors used for polyfit
-						ptsx_v(i) = dx * cos(-psi) - dy * sin(-psi);
-						ptsy_v(i) = dy * cos(-psi) + dx * sin(-psi);
-						// next_x_vals and next_y_vals are std vectors used for simulator feed
-						next_x_vals.push_back(ptsx_v(i));
-						next_y_vals.push_back(ptsy_v(i));
-					}
+	  // Transform reference trajector recieved from the simulator, from global
+	  // to vehicle coordinate system (vehicle is at origin)
+	  assert(ptsx_global.size() == ptsy_global.size());
+	  Eigen::VectorXd ptsx_v(look_ahead_pts);
+	  Eigen::VectorXd ptsy_v(look_ahead_pts);
+	  vector<double> next_x_vals;
+	  vector<double> next_y_vals;
+	  for (size_t i = 0; i < look_ahead_pts; ++i) {
+	    double dx = ptsx_global[i] - px;
+	    double dy = ptsy_global[i] - py;
+	    // ptsx_v and ptsy_v are Eigen vectors used for polyfit
+	    ptsx_v(i) = dx * cos(psi) + dy * sin(psi);
+	    ptsy_v(i) = dy * cos(psi) - dx * sin(psi);
+	    // next_x_vals and next_y_vals are std vectors used for simulator feed
+	    next_x_vals.push_back(ptsx_v(i));
+	    next_y_vals.push_back(ptsy_v(i));
+	  }
 					
-					// Fit transformed trajectory to a 3rd order ploynomial
-					Eigen::VectorXd coeffs = polyfit(ptsx_v, ptsy_v, 3);
+	  // Fit transformed trajectory to a 3rd order ploynomial
+	  Eigen::VectorXd coeffs = polyfit(ptsx_v, ptsy_v, 3);
 
-					// Set initial state with vehicle position is at origin
-					// with x0 = y0 = psi0 = 0 pointing straight ahead
-					double x0 = 0;
-					double y0 = 0;
-					double psi0 = 0;
+	  // Set initial state with vehicle position is at origin
+	  // with x0 = y0 = psi0 = 0 pointing straight ahead
+	  double x0 = 0;
+	  double y0 = 0;
+	  double psi0 = 0;
 					
-					// Calculate cross track error (cte) and psi error (epsi)
-					// Equations are simplified since px = py = psi = 0 in vehicle coordinate system
-					double cte0 = coeffs[0];
-					double epsi0 = -atan(coeffs[1]);
+	  // Calculate cross track error (cte) and psi error (epsi)
+	  // Equations are simplified since px = py = psi = 0 in vehicle coordinate system
+	  double cte0 = coeffs[0];
+	  double epsi0 = -atan(coeffs[1]);
 					
-					// Calculate new state based on actuate delay, assuming kinematic vehicle motion
-					Eigen::VectorXd delayed_state(6);
-					// Recalcuate the state of the vehicle considering latency effects
-					// delayed_state is of the form [x y psi v cte epsi]
-					double delayed_x = x0 + (v0 * cos(psi0) * delay_s);
-					double delayed_y = y0 + (v0 * sin(psi0) * delay_s);
-					double delayed_psi = psi0 - (v0 * delta0 * delay_s / Lf);
-					double delayed_v = v0 + a0 * delay_s;
-					delayed_state << delayed_x, delayed_y, delayed_psi, delayed_v, cte0, epsi0;
+	  // Calculate new state based on actuate delay, assuming kinematic vehicle motion
+	  Eigen::VectorXd delayed_state(6);
+	  // Recalcuate the state of the vehicle considering latency effects
+	  // delayed_state is of the form [x y psi v cte epsi]
+	  double delayed_x = x0 + (v0 * cos(psi0) * delay_s);
+	  double delayed_y = y0 + (v0 * sin(psi0) * delay_s);
+	  double delayed_psi = psi0 - (v0 * delta0 * delay_s / Lf);
+	  double delayed_v = v0 + a0 * delay_s;
+	  delayed_state << delayed_x, delayed_y, delayed_psi, delayed_v, cte0, epsi0;
 					
           // Calculate steering angle and throttle using MPC.
-					MPC_Result res = mpc.Solve(delayed_state, coeffs);
+	  MPC_Result res = mpc.Solve(delayed_state, coeffs);
 					
-					json msgJson;
+	  json msgJson;
 					
-					// Both steer_value and throttle_value should be between -1 and 1
-					// steer_value is divided by deg2rad(25) to normalize value between -1 and 1
-					double steer_value = res.delta/deg2rad(25);
+	  // Both steer_value and throttle_value should be between -1 and 1
+	  // steer_value is divided by deg2rad(25) to normalize value between -1 and 1
+	  double steer_value = res.delta/deg2rad(25);
           double throttle_value = res.a;
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
@@ -170,9 +170,9 @@ int main() {
           //Display the MPC predicted trajectory
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
-					assert(res.ptsx.size() == res.ptsy.size());
-					vector<double> mpc_x_vals = res.ptsx;
-					vector<double> mpc_y_vals = res.ptsy;
+	  assert(res.ptsx.size() == res.ptsy.size());
+	  vector<double> mpc_x_vals = res.ptsx;
+	  vector<double> mpc_y_vals = res.ptsy;
           msgJson["mpc_x"] = mpc_x_vals;
           msgJson["mpc_y"] = mpc_y_vals;
 
