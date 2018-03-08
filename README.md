@@ -11,7 +11,7 @@ This project implements a Model Predictive Controller (MPC) using the kinematic 
 
 ![simulation][image1]
   
-The gif image below shows a full track run using the MPC in the simulator. The car remains stable and tracks the reference trajectory very closely, even at high speeds. Note: the car appears different from the image above because a lower graphic quality was used for the gif; however, it is running the same MPC implementation found in this repository.
+The gif image below shows a full track run using the MPC in the simulator. The car remains stable and tracks the reference trajectory very closely, even at high speeds.
  
  ![run][image3]
  
