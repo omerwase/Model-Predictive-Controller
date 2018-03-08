@@ -29,7 +29,7 @@ Collectively the model equations and actuation bounds form the constraints throu
 * Rate of change between successive actuations should be minimize for smoother transitions.
 * The vehicle should maintain (or be close to) a certain reference velocity, which is set at 80mph.
   
-The equations that model the cost function are tuned through multipliers. Certain cost contributors, such as rate of actuator change, are given a very high priority (large multiplier) in order to keep the vehicle's motion stable. This is especially important at higher speeds where the steering angle has a pronounced effect on the car's position.
+The equations that model the cost function are tuned through multipliers. Certain cost contributors, such as cross track and psi error, are given a higher priority (large multiplier) in order to keep the vehicle on track. This also causes the vehicle to slowdown during sharp turns. This is especially important at high speeds where the steering angle has a pronounced effect on the car's position.
 
 ### Time Discretization
 
