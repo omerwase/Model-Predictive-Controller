@@ -1,7 +1,7 @@
 /* Udacity Self Driving Car Nano Degree
  * Project 5: Model Predictive Controller
  * Submitted by: Omer Waseem
- * Date: Mar 6th, 2018
+ * Date: Mar 8th, 2018
  *
  * Filename: MPC.hpp
  * Description: header file for MPC.cpp
@@ -19,10 +19,10 @@ using namespace std;
 
 // Set the timestep length and duration
 const size_t N = 10;
-const double dt = 0.05;
+const double dt = 0.1;
 
-// desired velocity for the cost optimization
-const double ref_v = 60;
+// desired velocity for cost optimization
+const double ref_v = 80;
 
 // This value assumes the model presented in the classroom is used.
 //

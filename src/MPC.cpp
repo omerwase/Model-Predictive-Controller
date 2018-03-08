@@ -1,7 +1,7 @@
 /* Udacity Self Driving Car Nano Degree
  * Project 5: Model Predictive Controller
  * Submitted by: Omer Waseem
- * Date: Mar 6th, 2018
+ * Date: Mar 8th, 2018
  *
  * Filename: MPC.cpp
  * Description: defines vehicle model and constraints to optimize actuations based on
@@ -43,23 +43,23 @@ class FG_eval {
 		
 		// Setup cost function
 		// Cost is stored as the first element of fg
-		// Cost is manually tuned using multipliers (first number after '+=')
+		// Cost is tuned using multipliers (first number after '+=')
 		fg[0] = 0; // initialize to 0
 		// Cost based on reference trajectory and velocity
 		for (size_t i = 0; i < N; ++i) {
-			fg[0] += 50 * CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += 50 * CppAD::pow(vars[epsi_start + i], 2);
+			fg[0] += 3000 * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += 3000 * CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - ref_v, 2);
 		}
 		// Cost based on magnitude of actuations, to avoid large values
 		for (size_t i = 0; i < N - 1; ++i) {
-			fg[0] += CppAD::pow(vars[delta_start + i], 2);
+			fg[0] += 5 * CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += CppAD::pow(vars[a_start + i], 2);
 		}
 		// Minimize gap between actuations, for smoother motion during state transition
 		for (size_t i = 0; i < N - 2; ++i) {
-			fg[0] += 80000 * CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
-			fg[0] += CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
+			fg[0] += 500 * CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
+			fg[0] += 5 * CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
 		}
 		
 		// Setup contraints based on vehicle motion (kinematic) model
@@ -155,8 +155,8 @@ MPC_Result MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 	// Upper and lower bounds for actuator variables
 	// -25 deg <= delta (steering angle) <= 25 degs
 	for (size_t i = delta_start; i < a_start; ++i) {
-		vars_lowerbound[i] = -0.436332; // in radians
-		vars_upperbound[i] = 0.436332;
+		vars_lowerbound[i] = -0.436332*Lf; // in radians
+		vars_upperbound[i] = 0.436332*Lf;
 	}
 	// -1 <= acceleration/decceleration <= 1
 	for (size_t i = a_start; i < n_vars; ++i) {
