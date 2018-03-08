@@ -6,7 +6,7 @@
 
 ## Overview
 
-This project implements a Model Predictive Controller (MPC) using the kinematic model for the vehicle's motion. It works in conjunction with Udacity's SDC Simulator. The simulator feeds the model with the reference trajectory. The controller uses the kinematic equations to determine optimal actuation values (steering and throttle/brake) to keep the car on the desired trajectory. The actuation commands are sent back to the simulator, and the process repeats. The image below shows this in action. The yellow line is the reference trajectory (in the vehicle's coordinate system) and the green line is the path calculated by the model. After tuning the MPC, the car reached a stop speed of 79mph.
+This project implements a Model Predictive Controller (MPC) using the kinematic model for vehicle motion. It works in conjunction with Udacity's SDC Simulator. The simulator feeds the model with the reference trajectory. The controller uses the kinematic equations to determine optimal actuation values (steering and throttle/brake) to keep the car on the desired trajectory. The actuation commands are sent back to the simulator, and the process repeats. The image below shows this in action. The yellow line is the reference trajectory (in the vehicle's coordinate system) and the green line is the path calculated by the model. After tuning the MPC, the car reached a stop speed of 79mph.
 
 ![simulation][image1]
   
