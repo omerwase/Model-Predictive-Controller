@@ -13,7 +13,7 @@ This project implements a Model Predictive Controller (MPC) using the kinematic 
   
 ## MPC Methodology
 
-The image below shows the implemented model, composed of: time discretization, kinematic equations including errors, and actuator constraints.
+The image below shows the implemented model, composed of: time discretization, kinematic equations including errors, and actuator bounds.
 
 ![mpc][image2]
 
