@@ -27,6 +27,8 @@ Collectively the model equations and actuation bounds form the constraints throu
 * cte and epsi should be minimized to stay as close to the reference trajectory as possible.
 * Magnitude of actuator variables should be minimized to avoid erratic motion.
 * Rate of change between successive actuations should be minimize for smoother motion.
+* The vehicle should maintain (or be close to) a certain reference velocity, which is set at 60mph.
+  
 The equations that model the cost function are tuned through multipliers. Certain cost contributors, such as rate of actuator change, are given a very high priority (large multiplier) in order to keep the vehicle's motion stable. This is especially important at higher speeds where the steering angle has a pronounced effect on the car's position.
 
 ### Time Discretization
