@@ -1,7 +1,7 @@
 # Model Predictive Controller
 
 [//]: # (Image References)
-[image1]: ./images/sim01.png
+[image1]: ./images/sim02.png
 [image2]: ./images/mpc.png
 
 ## Overview
