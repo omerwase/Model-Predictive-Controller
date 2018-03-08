@@ -1,4 +1,4 @@
-# Model Predictive Controller for Udacity's Self Driving Car Simulator
+# Model Predictive Controller
 
 [//]: # (Image References)
 [image1]: ./images/sim01.png
