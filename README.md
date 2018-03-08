@@ -6,7 +6,7 @@
 
 ## Overview
 
-This project implements a Model Predictive Controller (MPC) using the kinematic model for the vehicle's motion. It works in conjunction with Udacity's SDC Simulator. The simulator feeds the model with the reference trajectory. The controller uses the kinematic equations to determine optimal actuation values (steering and throttle/brake) to keep the car on the desired trajectory. The actuation commands are sent back to the simulator, and the process repeats. The image below shows this in action. The yellow line is the reference trajectory (in the vehicle's coordinate system) and the green line is the path calculated by the model.
+This project implements a Model Predictive Controller (MPC) using the kinematic model for the vehicle's motion. It works in conjunction with Udacity's SDC Simulator. The simulator feeds the model with the reference trajectory. The controller uses the kinematic equations to determine optimal actuation values (steering and throttle/brake) to keep the car on the desired trajectory. The actuation commands are sent back to the simulator, and the process repeats. The image below shows this in action. The yellow line is the reference trajectory (in the vehicle's coordinate system) and the green line is the path calculated by the model. After tuning the MPC, the car reached a stop speed of 79mph.
 
 ![simulation][image1]
   
@@ -27,7 +27,7 @@ Collectively the model equations and actuation bounds form the constraints throu
 * cte and epsi should be minimized to stay as close to the reference trajectory as possible.
 * Magnitude of actuator variables should be minimized to avoid erratic motion.
 * Rate of change between successive actuations should be minimize for smoother transitions.
-* The vehicle should maintain (or be close to) a certain reference velocity, which is set at 60mph.
+* The vehicle should maintain (or be close to) a certain reference velocity, which is set at 80mph.
   
 The equations that model the cost function are tuned through multipliers. Certain cost contributors, such as rate of actuator change, are given a very high priority (large multiplier) in order to keep the vehicle's motion stable. This is especially important at higher speeds where the steering angle has a pronounced effect on the car's position.
 
@@ -35,7 +35,7 @@ The equations that model the cost function are tuned through multipliers. Certai
 
 The ipopt optimizer works on discrete values and as such time is modelled as discrete time-steps represented by N (number of steps) and dt (elapsed time between time). Multiplying these two values gives the total time the model 'looks ahead'. Using these two hyperparameters, the MPC determines the lowest cost trajectory at each time step, and the actuations required for them. Note: only actuations from the first (current) time-step are sent to the simulator.
 
-These hyperparameters are tuned in order to produce stable vehicle motion. Larger values of N requires the optimizer to consider more time-steps in its calculation, which is a time intensive process. Since state values further in the future are less reliable, a small value is chosen for N. For dt smaller values are desired, since it makes the MPC's behaviour more continuous. In the implemented controller N = 10 time-steps and dt = 50 ms.
+These hyperparameters are tuned in order to produce stable vehicle motion. Larger values of N requires the optimizer to consider more time-steps in its calculation, which is a time intensive process. Since state values further in the future are less reliable, a small value is chosen for N. For dt smaller values are desired, since it makes the MPC's behaviour more continuous. However it also shortens the controllers horizon (T = N * dt). In the implemented controller N = 10 time-steps and dt = 0.1s. Other values were tested but they either introduced computational delay (higher N) or a short horizon (smaller dt).
 
 ### Trajectory Preprocessing and Polynomial Fitting
 
@@ -45,7 +45,7 @@ The MPC receives the reference trajectory from the simulator in the global coord
 
 In an actual Self Driving Car the actuators have a systemic delay, from the time the command is issues to when its actually performed. This is a characteristic of the mechanical components involved in performing these commands. One advantage of MPC is that it allows us to easily account for this latency. 
 
-In the program this is modelled by a 100ms delay between when the MPC calculates the actuations and when they're sent back to the simulator (using thread sleep). In order to account for this latency a delayed state is calculated for the vehicle, using the kinematic equations, that determines where the car will be after 100ms. This delayed state (x', y', psi', v') is then sent to the MPC to determine desired actuations 100ms into the future. This results in more stable vehicle motion, since the effects of latency can build up in wild oscillations.
+In the program this is modelled by a 100ms delay between when the MPC calculates the actuations and when they're sent back to the simulator (using thread sleep). In order to account for this latency a delayed state is calculated for the vehicle, using the kinematic equations, that determines where the car will be after 100ms. This delayed state (x', y', psi', v', cte', epsi') is then sent to the MPC to determine desired actuations 100ms into the future. This results in more stable vehicle motion, since the effects of latency can build up in wild oscillations.
   
 ## Dependencies
 * cmake >= 3.5
