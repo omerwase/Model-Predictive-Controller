@@ -3,6 +3,7 @@
 [//]: # (Image References)
 [image1]: ./images/sim02.png
 [image2]: ./images/mpc.png
+[image3]: ./images/run.gif
 
 ## Overview
 
@@ -10,7 +11,10 @@ This project implements a Model Predictive Controller (MPC) using the kinematic 
 
 ![simulation][image1]
   
-  
+ The gif image below shows a full track run using the MPC in the simulator:
+ 
+ ![run][image3]
+ 
 ## MPC Methodology
 
 The image below shows the implemented model, composed of: time discretization, kinematic equations including errors, and actuator bounds.
