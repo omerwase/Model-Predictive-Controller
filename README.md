@@ -23,7 +23,7 @@ The vehicle's state is modeled using 6 variables: x, y, psi, v, cte and epsi. Th
 
 ### Model Cost
 
-Collectively the model equations and actuation bounds form the constraints through which the model's cost is optimized (minimized). This is done using the ipopt and CppAD libraries. The model's cost is defined around three main considerations: 
+Collectively the model equations and actuation bounds form the constraints through which the model's cost is optimized (minimized). This is done using the ipopt and CppAD libraries. The model's cost is based on four main considerations: 
 * cte and epsi should be minimized to stay as close to the reference trajectory as possible.
 * Magnitude of actuator variables should be minimized to avoid erratic motion.
 * Rate of change between successive actuations should be minimize for smoother motion.
